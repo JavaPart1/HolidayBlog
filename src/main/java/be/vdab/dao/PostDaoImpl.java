@@ -18,10 +18,6 @@ public class PostDaoImpl implements PostDao{
     }
 
     @Override
-    public User getUserByName(String srName) throws SQLException {
-    }
-
-    @Override
     public void createPost(Post nwPost) throws SQLException {
         String insert = "INSERT INTO post (idpost, title, text, creationdate, authorid) " +
                 " VALUES (?, ?, ?, ?, ?)";
@@ -52,7 +48,7 @@ public class PostDaoImpl implements PostDao{
 
     @Override
     public ArrayList<Post> getAllPosts() throws SQLException {
-        String query = "SELECT * FROM post ";
+        String query = "SELECT * FROM post p INNER JOIN user u ON p.authorid = u.iduser ";
         ArrayList<Post> arrayPost = new ArrayList<>();
 
         try (
@@ -68,7 +64,7 @@ public class PostDaoImpl implements PostDao{
                     rsPost.setTitle(rs.getString("title"));
                     rsPost.setText(rs.getString("text"));
                     rsPost.setDate_creation(rs.getString("creationdate"));
-                    rsPost.setAuthor(author);
+                    //rsPost.setAuthor(author);
                     arrayPost.add(rsPost);
                 }
                 return arrayPost;

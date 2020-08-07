@@ -1,8 +1,10 @@
 package be.vdab.app;
 
 import be.vdab.dao.PostDao;
+import be.vdab.dao.PostDaoImpl;
 import be.vdab.dao.UserDao;
 import be.vdab.dao.UserDaoImpl;
+import be.vdab.entity.Post;
 import be.vdab.entity.User;
 
 import java.sql.SQLException;
@@ -41,6 +43,7 @@ public class BlogApp {
     }
 
     private static void createPost(String uName) throws SQLException {
+        Scanner input = new Scanner(System.in);
         // Gather user info
         UserDao userDao = new UserDaoImpl(JDBCURL,JDBCUSER,PASSW);
         User postWriter = userDao.getUserByName(uName);
@@ -53,11 +56,21 @@ public class BlogApp {
 
         try {
             // Determine nbr of posts for new postid
-            nwPostId =
+            nwPostId = postDao.detNbrPosts() + 1;
+
+            // Input title & text
+            System.out.println("Title? ");
+            nwTitle = input.nextLine();
+            System.out.println("Text?");
+            nwText = input.nextLine();
+
+            // Create post object
+            Post nwPost = new Post(nwPostId,nwTitle,nwText,postWriter);
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-        //
-
-
 
     }
 
