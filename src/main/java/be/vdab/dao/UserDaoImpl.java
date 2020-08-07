@@ -56,6 +56,7 @@ public class UserDaoImpl implements UserDao{
             ) {
                 if (rs.next()) {
                     User person = new User();
+                    person.setId(rs.getInt("iduser"));
                     person.setUserName(rs.getString("username"));
                     person.setPassWord(rs.getString("password"));
                     return person;
@@ -78,6 +79,30 @@ public class UserDaoImpl implements UserDao{
                 PreparedStatement stmt = con.prepareStatement(query)
         ) {
             stmt.setString(1, srName);
+            try (
+                    ResultSet rs = stmt.executeQuery()
+            ) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    throw new SQLException("SQL error l2");
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new SQLException("SQL error l1");
+        }
+    }
+
+    @Override
+    public int detUserPass(String srName, String srPass) throws SQLException {
+        String query = "SELECT COUNT(*) FROM user WHERE username=? AND password=?";
+        try (
+                Connection con = getConnection();
+                PreparedStatement stmt = con.prepareStatement(query)
+        ) {
+            stmt.setString(1, srName);
+            stmt.setString(2, srPass);
             try (
                     ResultSet rs = stmt.executeQuery()
             ) {

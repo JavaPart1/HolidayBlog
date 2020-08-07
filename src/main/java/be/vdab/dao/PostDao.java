@@ -10,5 +10,7 @@ public interface PostDao {
     public void createPost(Post nwPost) throws SQLException;
     public void updatePost(Post corPost) throws SQLException;
     public void deletePost(Post delPost) throws SQLException;
+    public ArrayList<Post> getAllPosts() throws SQLException;
     public ArrayList<Post> getPostForAuthor(User author) throws SQLException;
+    public int detNbrPosts() throws SQLException;
 }

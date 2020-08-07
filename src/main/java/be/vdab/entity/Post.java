@@ -6,22 +6,30 @@ public class Post {
     private int id;
     private String title;
     private String text;
-    private Date date_creation;
+    private String date_creation;
     private User author;
-    static int nbrOfPosts;
 
-    public Post(String title, String text, User author) {
+    public Post() {
+    }
+
+    public Post(int nwId, String title, String text, User author) {
         this.title = title;
         this.text = text;
         this.author = author;
-        this.date_creation = new Date();
-        this.id = getNbrOfPosts() + 1;
-
-        setNbrOfPosts(getNbrOfPosts() + 1);
+        this.date_creation = new Date().toString();
+        this.id = nwId;
     }
 
-    public User getAuthor() {
-        return author;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getAuthor() {
+        return author.getId();
+    }
+
+    public void setDate_creation(String date_creation) {
+        this.date_creation = date_creation;
     }
 
     public void setAuthor(User author) {
@@ -48,15 +56,8 @@ public class Post {
         return text;
     }
 
-    public Date getDate_creation() {
-        return date_creation;
+    public String getDate_creation() {
+        return date_creation.toString();
     }
 
-    public static int getNbrOfPosts() {
-        return nbrOfPosts;
-    }
-
-    public static void setNbrOfPosts(int nbrOfPosts) {
-        Post.nbrOfPosts = nbrOfPosts;
-    }
 }

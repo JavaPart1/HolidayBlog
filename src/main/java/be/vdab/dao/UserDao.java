@@ -10,5 +10,6 @@ public interface UserDao {
     public void deleteUser(User delUser) throws SQLException;
     public User getUserByName(String srName) throws SQLException;
     public int detUserExist(String srName) throws SQLException;
+    public int detUserPass(String srName,String srPass) throws SQLException;
     public int detNbrUsers() throws SQLException;
 }
