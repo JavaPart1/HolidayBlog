@@ -4,25 +4,14 @@ public class User {
     private int id;
     private String userName;
     private String passWord;
-    static int nbrOfUsers;
 
     public User() {
     }
 
-    public User(String userName, String passWord) {
-        this.id = getNbrOfUsers() + 1;
+    public User(int nwId,String userName, String passWord) {
+        this.id = nwId;
         this.userName = userName;
         this.passWord = passWord;
-
-        setNbrOfUsers(getNbrOfUsers() + 1);
-    }
-
-    public static int getNbrOfUsers() {
-        return nbrOfUsers;
-    }
-
-    public static void setNbrOfUsers(int nbrOfUsers) {
-        User.nbrOfUsers = nbrOfUsers;
     }
 
     public void setUserName(String userName) {

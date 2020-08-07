@@ -70,6 +70,51 @@ public class UserDaoImpl implements UserDao{
         }
     }
 
+    @Override
+    public int detUserExist(String srName) throws SQLException {
+        String query = "SELECT COUNT(*) FROM user WHERE username=?";
+        try (
+                Connection con = getConnection();
+                PreparedStatement stmt = con.prepareStatement(query)
+        ) {
+            stmt.setString(1, srName);
+            try (
+                    ResultSet rs = stmt.executeQuery()
+            ) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    throw new SQLException("SQL error l2");
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new SQLException("SQL error l1");
+        }
+    }
+
+    @Override
+    public int detNbrUsers() throws SQLException {
+        String query = "SELECT COUNT(*) FROM user ";
+        try (
+                Connection con = getConnection();
+                PreparedStatement stmt = con.prepareStatement(query)
+        ) {
+            try (
+                    ResultSet rs = stmt.executeQuery()
+            ) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    throw new SQLException("SQL error l2");
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new SQLException("SQL error l1");
+        }
+    }
+
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, user, password);
     }
