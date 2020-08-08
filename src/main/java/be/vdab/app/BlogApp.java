@@ -1,6 +1,7 @@
 package be.vdab.app;
 
 import be.vdab.dao.*;
+import be.vdab.entity.Comment;
 import be.vdab.entity.Post;
 import be.vdab.entity.User;
 
@@ -92,9 +93,7 @@ public class BlogApp {
 
         System.out.println("Titels vn posts: ");
         for (int i = 0; i < listPosts.size() ; i++) {
-            System.out.println(i + " " + listPosts.get(i).getTitle());
-            System.out.print(" " + listPosts.get(i).getText());
-
+            System.out.println(i + " " + listPosts.get(i).getTitle() + " ; " + listPosts.get(i).getText());
         }
         System.out.println(" ");
         System.out.println("Choose a postnumber to give comment on :");
@@ -102,26 +101,24 @@ public class BlogApp {
 
         // Initialisations new post
         int nwCommentId = 0;
-        String nwCommentText = "";
-        int authorId = postWriter.getId();
-        int postId = listPosts.get(t).getId();
-        //CommentDao commentDao =
+        CommentDao commentDao = new CommentDaoImpl(JDBCURL,JDBCUSER,PASSW);
 
         try {
             // Determine nbr of comments for new commentid
-            nwCommentId = postDao.detNbrPosts() + 1;
+            nwCommentId = commentDao.detNbrOfComments() + 1;
 
-            // Input title & text
-            System.out.println("Text?");
-            //nwText = input.nextLine();
+            // Input text
+            System.out.println("Comment? ");
+            String nwComText = input.nextLine();
+            String dfg = input.nextLine();
 
-            // Create post object
-            //Post nwPost = new Post(nwPostId,nwTitle,nwText,postWriter);
+            // Create comment object
+            Comment nwComment = new Comment(nwCommentId,dfg,postWriter,listPosts.get(t));
 
             // Save post in DB
-            //postDao.createPost(nwPost);
+            commentDao.createComment(nwComment);
             System.out.println(" ");
-            //System.out.println("Post " + nwTitle + " is created !");
+            System.out.println("Comment for post " + listPosts.get(t).getTitle() + " is created !");
 
 
         } catch (SQLException throwables) {
@@ -142,8 +139,10 @@ public class BlogApp {
         do {
             System.out.println("Username ? or quit to stop ");
             uName = input.nextLine();
-            System.out.println("Password ? or quit to stop ");
-            passW = input.nextLine();
+            if (!uName.equals("quit")){
+                System.out.println("Password ? or quit to stop ");
+                passW = input.nextLine();
+            }
 
             if ((uName.equals("quit")) || (passW.equals("quit"))){
                 // quit app

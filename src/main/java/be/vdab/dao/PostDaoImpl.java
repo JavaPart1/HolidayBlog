@@ -48,8 +48,8 @@ public class PostDaoImpl implements PostDao{
 
     @Override
     public ArrayList<Post> getAllPosts() throws SQLException {
-        String query = "SELECT * FROM post p INNER JOIN user u ON p.authorid = u.iduser ";
-        ArrayList<Post> arrayPost = new ArrayList<>();
+        String query = "SELECT * FROM post ";
+        ArrayList<Post> arrayPost = new ArrayList<Post>();
 
         try (
                 Connection con = getConnection();
@@ -58,13 +58,13 @@ public class PostDaoImpl implements PostDao{
             try (
                     ResultSet rs = stmt.executeQuery()
             ) {
-                Post rsPost = new Post();
+                Post rsPost;
                 while (rs.next()) {
+                    rsPost = new Post();
                     rsPost.setId(rs.getInt("idpost"));
                     rsPost.setTitle(rs.getString("title"));
                     rsPost.setText(rs.getString("text"));
                     rsPost.setDate_creation(rs.getString("creationdate"));
-                    //rsPost.setAuthor(author);
                     arrayPost.add(rsPost);
                 }
                 return arrayPost;
