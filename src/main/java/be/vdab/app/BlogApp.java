@@ -1,13 +1,11 @@
 package be.vdab.app;
 
-import be.vdab.dao.PostDao;
-import be.vdab.dao.PostDaoImpl;
-import be.vdab.dao.UserDao;
-import be.vdab.dao.UserDaoImpl;
+import be.vdab.dao.*;
 import be.vdab.entity.Post;
 import be.vdab.entity.User;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static be.vdab.dao.JDBCPass.*;
@@ -19,7 +17,8 @@ public class BlogApp {
         String uName = "";
         String passW = "";
         try {
-            if (logInUser(uName,passW) == true){
+            uName = logInUser(uName,passW);
+            if (!uName.isBlank()){
                 // Menu : create post or create comment
                 System.out.println("Menu:");
                 System.out.println("Choose '1' to post a message");
@@ -37,6 +36,7 @@ public class BlogApp {
 
             }
         } catch (SQLException throwables) {
+            System.out.println(throwables.getErrorCode());
             throwables.printStackTrace();
         }
 
@@ -67,18 +67,71 @@ public class BlogApp {
             // Create post object
             Post nwPost = new Post(nwPostId,nwTitle,nwText,postWriter);
 
+            // Save post in DB
+            postDao.createPost(nwPost);
+            System.out.println(" ");
+            System.out.println("Post " + nwTitle + " is created !");
+
 
         } catch (SQLException throwables) {
+            System.out.println("SQL error: " + throwables.getErrorCode());
             throwables.printStackTrace();
         }
 
     }
 
     private static void createComment(String uName) throws SQLException {
+        Scanner input = new Scanner(System.in);
+        // Gather user info
+        UserDao userDao = new UserDaoImpl(JDBCURL,JDBCUSER,PASSW);
+        User postWriter = userDao.getUserByName(uName);
+
+        // Gather post info
+        PostDao postDao = new PostDaoImpl(JDBCURL,JDBCUSER,PASSW);
+        ArrayList<Post> listPosts = postDao.getAllPosts();
+
+        System.out.println("Titels vn posts: ");
+        for (int i = 0; i < listPosts.size() ; i++) {
+            System.out.println(i + " " + listPosts.get(i).getTitle());
+            System.out.print(" " + listPosts.get(i).getText());
+
+        }
+        System.out.println(" ");
+        System.out.println("Choose a postnumber to give comment on :");
+        int t = input.nextInt();
+
+        // Initialisations new post
+        int nwCommentId = 0;
+        String nwCommentText = "";
+        int authorId = postWriter.getId();
+        int postId = listPosts.get(t).getId();
+        //CommentDao commentDao =
+
+        try {
+            // Determine nbr of comments for new commentid
+            nwCommentId = postDao.detNbrPosts() + 1;
+
+            // Input title & text
+            System.out.println("Text?");
+            //nwText = input.nextLine();
+
+            // Create post object
+            //Post nwPost = new Post(nwPostId,nwTitle,nwText,postWriter);
+
+            // Save post in DB
+            //postDao.createPost(nwPost);
+            System.out.println(" ");
+            //System.out.println("Post " + nwTitle + " is created !");
+
+
+        } catch (SQLException throwables) {
+            System.out.println("SQL error: " + throwables.getErrorCode());
+            throwables.printStackTrace();
+        }
 
     }
 
-    private static boolean logInUser(String uName,String passW) throws SQLException {
+    private static String logInUser(String uName,String passW) throws SQLException {
         System.out.println("User log in ...");
         System.out.println(" ");
         boolean quitApp = false;
@@ -92,7 +145,7 @@ public class BlogApp {
             System.out.println("Password ? or quit to stop ");
             passW = input.nextLine();
 
-            if ((uName == "quit") || (passW == "quit")){
+            if ((uName.equals("quit")) || (passW.equals("quit"))){
                 // quit app
                 quitApp = true;
             } else {
@@ -108,10 +161,10 @@ public class BlogApp {
 
         if (quitApp){
             System.out.println("Stopping app ...");
-            return false;
+            return " ";
         } else {
             System.out.println("Login credentials correct !");
-            return true;
+            return uName;
         }
     }
 }
